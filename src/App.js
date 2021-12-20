@@ -1,27 +1,25 @@
-import {getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import './App.css';
+import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { useState } from "react";
 import initializeAuthentication from "./Firebase/firebase.initialize";
-
-
-
 initializeAuthentication();
 
-const provider = new GoogleAuthProvider();
-
-function App() {
-  const handleGoogleSignIn = () =>{
+const GoogleProvider = new GoogleAuthProvider();
+export default function App() {
+  const [user, setUser] = useState('');
+  const HandleGoogleSignIn = () => {
     const auth = getAuth();
-    signInWithPopup(auth, provider)
-    .then((result) => {
-      const user = result.user;
-      console.log(user);
-    })
+    signInWithPopup(auth, GoogleProvider)
+      .then((result) => {
+        const user = result.user;
+        setUser(user);
+      })
   }
   return (
     <div className="App">
-      <button onClick={ handleGoogleSignIn }>Google</button>
+      {user?.email ? <button >Logout</button> : <button onClick={HandleGoogleSignIn}>Sign In With Google</button>}
+      {user?.email && <div>
+        <h1>Hello {user.displayName}</h1>
+      </div>}
     </div>
   );
 }
-
-export default App;
